@@ -63,8 +63,8 @@ func main() {
 func (mw *AuthenticationMiddleware) MiddlewareFunc(handler rest.HandlerFunc) rest.HandlerFunc {
   return func(writer rest.ResponseWriter, request *rest.Request) {
     fmt.Println("Authenticating...")
-
-    if authenticatedRequest(request) {
+    fmt.Println("Requested URL", request.URL.Path)
+    if authenticatedRequest(request) || request.URL.Path == "/"{
       handler(writer, request)
     } else {
       mw.unauthorized(writer)
