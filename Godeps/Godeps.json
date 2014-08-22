@@ -1,0 +1,19 @@
+{
+	"ImportPath": "wager_tagger_go_api",
+	"GoVersion": "go1.3",
+	"Deps": [
+		{
+			"ImportPath": "github.com/ant0ine/go-json-rest/rest",
+			"Comment": "v2.0.5-10-gb6ed918",
+			"Rev": "b6ed918f92ab341096146576d767c60f815cb43b"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/gorm",
+			"Rev": "07e2d49b22b32d037bb283e46d92c5d6a09d95c9"
+		},
+		{
+			"ImportPath": "github.com/lib/pq",
+			"Rev": "3c5c5bd6383b42aec97b5aa39fba2cddd35aea36"
+		}
+	]
+}
