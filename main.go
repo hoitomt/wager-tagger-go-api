@@ -13,6 +13,7 @@ import (
   "github.com/ant0ine/go-json-rest/rest"
   // "database/sql"
   "time"
+  "os"
 )
 
 type Ticket struct {
@@ -57,7 +58,12 @@ func main() {
   if err != nil {
       log.Fatal(err)
   }
-  log.Fatal(http.ListenAndServe(":4000", &handler))
+
+  port := "4000"
+  if os.Getenv("PORT") != "" {
+    port = os.Getenv("PORT")
+  }
+  log.Fatal(http.ListenAndServe(":" + port, &handler))
 }
 
 func (mw *AuthenticationMiddleware) MiddlewareFunc(handler rest.HandlerFunc) rest.HandlerFunc {
