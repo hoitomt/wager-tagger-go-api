@@ -9,6 +9,7 @@ import (
 	"strings"
 	"wager_tagger_go_api/dao"
 	"wager_tagger_go_api/handlers"
+	"wager_tagger_go_api/wflags"
 
 	"github.com/ant0ine/go-json-rest/rest"
 )
@@ -21,6 +22,8 @@ type MyAuthenticationMiddleware struct{}
 type MyCorsMiddleware struct{}
 
 func main() {
+	wflags.ProcessFlags()
+
 	handler := rest.ResourceHandler{
 		PreRoutingMiddlewares: []rest.Middleware{
 			&MyCorsMiddleware{},

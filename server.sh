@@ -4,4 +4,4 @@
 
 echo "Starting Server"
 
-./wager_tagger_go_api
+./wager_tagger_go_api -env=development
