@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -55,12 +54,12 @@ func (mw *MyCorsMiddleware) MiddlewareFunc(handler rest.HandlerFunc) rest.Handle
 
 		corsInfo := request.GetCorsInfo()
 
-		fmt.Println("Cors Info IsCors", corsInfo.IsCors)
-		fmt.Println("Cors Info IsPreflight", corsInfo.IsPreflight)
-		fmt.Println("Cors Info AccessControlRequestMethod", corsInfo.AccessControlRequestMethod)
-		fmt.Println("Cors Info AccessControlRequestHeaders", corsInfo.AccessControlRequestHeaders)
-		fmt.Println("Cors Info Origin", corsInfo.Origin)
-		fmt.Println("Cors Info Origin", corsInfo.OriginUrl)
+		log.Println("Cors Info IsCors", corsInfo.IsCors)
+		log.Println("Cors Info IsPreflight", corsInfo.IsPreflight)
+		log.Println("Cors Info AccessControlRequestMethod", corsInfo.AccessControlRequestMethod)
+		log.Println("Cors Info AccessControlRequestHeaders", corsInfo.AccessControlRequestHeaders)
+		log.Println("Cors Info Origin", corsInfo.Origin)
+		log.Println("Cors Info OriginUrl", corsInfo.OriginUrl)
 
 		if !corsInfo.IsCors {
 			handler(writer, request)
@@ -85,9 +84,11 @@ func (mw *MyCorsMiddleware) MiddlewareFunc(handler rest.HandlerFunc) rest.Handle
 				"Content-Type":    true,
 				"X-Custom-Header": true,
 				"Authorization":   true,
+				"Origin":          true,
 			}
 			for _, requestedHeader := range corsInfo.AccessControlRequestHeaders {
 				if !allowedHeaders[requestedHeader] {
+					log.Println("Invalid Preflight Request")
 					rest.Error(writer, "Invalid Preflight Request", http.StatusForbidden)
 					return
 				}
@@ -116,7 +117,7 @@ func (mw *MyCorsMiddleware) MiddlewareFunc(handler rest.HandlerFunc) rest.Handle
 
 func (mw *MyAuthenticationMiddleware) MiddlewareFunc(handler rest.HandlerFunc) rest.HandlerFunc {
 	return func(writer rest.ResponseWriter, request *rest.Request) {
-		fmt.Println("Authenticating...")
+		log.Println("Authenticating...")
 		if authenticatedRequest(request) || request.URL.Path == "/" {
 			handler(writer, request)
 		} else {
@@ -133,13 +134,15 @@ func (mw *MyAuthenticationMiddleware) unauthorized(writer rest.ResponseWriter) {
 func authenticatedRequest(request *rest.Request) bool {
 	authHeader := request.Header.Get("Authorization")
 	if authHeader == "" {
+		log.Println("Missing the Authorization Request Header")
 		return false
 	}
 	re := regexp.MustCompile(`"(.*?)"`)
 	match := re.FindString(authHeader)
 	accessToken := strings.Trim(match, "\"")
-	fmt.Println("Access Token", accessToken)
+	log.Println("Access Token", accessToken)
 	if match == "" {
+		log.Println("Missing Access Token")
 		return false
 	}
 	return dao.ValidAccessToken(accessToken)
