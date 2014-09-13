@@ -55,6 +55,13 @@ func (mw *MyCorsMiddleware) MiddlewareFunc(handler rest.HandlerFunc) rest.Handle
 
 		corsInfo := request.GetCorsInfo()
 
+		fmt.Println("Cors Info IsCors", corsInfo.IsCors)
+		fmt.Println("Cors Info IsPreflight", corsInfo.IsPreflight)
+		fmt.Println("Cors Info AccessControlRequestMethod", corsInfo.AccessControlRequestMethod)
+		fmt.Println("Cors Info AccessControlRequestHeaders", corsInfo.AccessControlRequestHeaders)
+		fmt.Println("Cors Info Origin", corsInfo.Origin)
+		fmt.Println("Cors Info Origin", corsInfo.OriginUrl)
+
 		if !corsInfo.IsCors {
 			handler(writer, request)
 			return
