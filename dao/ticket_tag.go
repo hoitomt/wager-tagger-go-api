@@ -13,12 +13,15 @@ type TicketTag struct {
 	Name     string  `json:"name"`
 }
 
-func (t TicketTag) Create() {
+func (t *TicketTag) Create() {
 	fmt.Println("Ticket Tag Create: ", t)
 	daoDb := db.GetDb()
 	defer daoDb.Close()
-	daoDb.Exec("INSERT INTO ticket_tags (ticket_id, tag_id, amount) VALUES (?, ?, ?)", &t.TicketId, &t.TagId, &t.Amount)
 
+	query := daoDb.Raw("INSERT INTO ticket_tags (ticket_id, tag_id, amount) VALUES (?, ?, ?) RETURNING id", &t.TicketId, &t.TagId, &t.Amount)
+	row := query.Row()
+	row.Scan(&t.Id)
+	// db.Table("ticket_tags").Insert
 	// return t
 }
 

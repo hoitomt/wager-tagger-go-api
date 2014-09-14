@@ -21,10 +21,6 @@ func CreateTicketTag(w rest.ResponseWriter, req *rest.Request) {
 	ticketTag := dao.TicketTag{}
 	req.DecodeJsonPayload(&ticketTag)
 
-	fmt.Printf("Amount %v\n", ticketTag.Amount)
-
-	fmt.Println("Json Ticket Tag", ticketTag)
-
 	ticketTag.TicketId = ticketId
 
 	fmt.Println("Json Ticket Tag Form", ticketTag)
