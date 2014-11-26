@@ -35,14 +35,16 @@ func main() {
 		&rest.Route{"GET", "/tickets/:ticket_id", handlers.GetTicket},
 		&rest.Route{"POST", "/tickets/:ticket_id/ticket_tags", handlers.CreateTicketTag},
 		&rest.Route{"DELETE", "/tickets/:ticket_id/ticket_tags/:ticket_tag_id", handlers.DeleteTicketTag},
+		&rest.Route{"GET", "/finances", handlers.GetFinances},
 		&rest.Route{"GET", "/tags", handlers.GetTags},
 	)
-	log.Println("listening...")
+	port := "4001"
+	log.Printf("listening on %v...\n", port)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	port := "4001"
+	// needed for Heroku
 	if os.Getenv("PORT") != "" {
 		port = os.Getenv("PORT")
 	}
@@ -119,6 +121,7 @@ func (mw *MyAuthenticationMiddleware) MiddlewareFunc(handler rest.HandlerFunc) r
 	return func(writer rest.ResponseWriter, request *rest.Request) {
 		log.Println("Authenticating...")
 		if authenticatedRequest(request) || request.URL.Path == "/" {
+			log.Println("Authenticated Request")
 			handler(writer, request)
 		} else {
 			mw.unauthorized(writer)
@@ -132,6 +135,10 @@ func (mw *MyAuthenticationMiddleware) unauthorized(writer rest.ResponseWriter) {
 }
 
 func authenticatedRequest(request *rest.Request) bool {
+	if !wflags.IsProduction() {
+		return true
+	}
+
 	authHeader := request.Header.Get("Authorization")
 	if authHeader == "" {
 		log.Println("Missing the Authorization Request Header")

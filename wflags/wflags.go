@@ -25,3 +25,7 @@ func validateFlags() {
 		log.Fatalln("[ERROR] You must specify valid Environment")
 	}
 }
+
+func IsProduction() bool {
+	return Environment == "production"
+}
