@@ -19,12 +19,15 @@ type Message struct {
 
 type MyAuthenticationMiddleware struct{}
 type MyCorsMiddleware struct{}
+type LoggingMiddleware struct{}
 
 func main() {
 	wflags.ProcessFlags()
 
 	handler := rest.ResourceHandler{
+		EnableRelaxedContentType: true,
 		PreRoutingMiddlewares: []rest.Middleware{
+			&LoggingMiddleware{},
 			&MyCorsMiddleware{},
 			&MyAuthenticationMiddleware{},
 		},
@@ -132,6 +135,14 @@ func (mw *MyAuthenticationMiddleware) MiddlewareFunc(handler rest.HandlerFunc) r
 
 func (mw *MyAuthenticationMiddleware) unauthorized(writer rest.ResponseWriter) {
 	rest.Error(writer, "Not Authorized", http.StatusUnauthorized)
+}
+
+func (mw *LoggingMiddleware) MiddlewareFunc(handler rest.HandlerFunc) rest.HandlerFunc {
+	return func(writer rest.ResponseWriter, request *rest.Request) {
+		log.Printf("%s\t%s for %s\n", request.Method, request.URL.RequestURI(), request.RemoteAddr)
+		handler(writer, request)
+		return
+	}
 }
 
 func authenticatedRequest(request *rest.Request) bool {
