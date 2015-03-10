@@ -1,0 +1,10 @@
+{
+  "name": "Wager Tagger Go Api",
+  "description": "An api to serve ticket information",
+  "repository": "https://github.com/hoitomt/wager-tagger-go-api",
+  "keywords": ["wager", "gambling", "golang", "go"],
+  "addons": [],
+  "env": {
+    "BUILDPACK_URL": "https://github.com/kr/heroku-buildpack-go.git"
+  }
+}
