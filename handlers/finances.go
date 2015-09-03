@@ -35,7 +35,10 @@ func GetFinances(w rest.ResponseWriter, req *rest.Request) {
 
 	for _, tag := range tags {
 		finance := dao.GetFinances(tag.Id, startDate, stopDate)
-		log.Println("Finance", finance)
+		log.Printf("Finance: %+v\n", finance)
+		if finance.Name == "" {
+			continue
+		}
 		finances = append(finances, finance)
 	}
 
